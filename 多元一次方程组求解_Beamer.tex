@@ -1,0 +1,339 @@
+\documentclass[aspectratio=169,12pt]{beamer}
+
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usetheme{Madrid}
+
+\title{多元一次方程组求解}
+\subtitle{从消元法到克拉默法则}
+\author{}
+\date{2026年3月}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section{问题引入}
+
+\begin{frame}
+\frametitle{核心问题}
+\textbf{二元方程组}会解，三元、四元甚至更多未知数呢？
+
+\[
+\begin{cases}
+x + y + z = 6 \\
+x - y + z = 4 \\
+x + y - z = 2
+\end{cases}
+\]
+
+\bigskip
+\pause
+\centerline{\Large 有没有一种方法可以统一求解？}
+\end{frame}
+
+\section{消元法}
+
+\begin{frame}
+\frametitle{消元法示例}
+\textbf{二元例子}：
+\[
+\begin{cases} x + y = 2 \\ x - y = 0 \end{cases}
+\]
+
+消元步骤：
+\begin{enumerate}
+    \item $(x+y) - (x-y) = 2-0$
+    \item $2y = 2 \Rightarrow y = 1$
+    \item $x + 1 = 2 \Rightarrow x = 1$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\pause
+\textbf{三元例子}：
+\[
+\begin{cases}
+x + y + z = 6 \\
+x - y + z = 4 \\
+x + y - z = 2
+\end{cases}
+\]
+
+消元步骤：
+\begin{enumerate}
+    \item (1)-(2)：$2y = 2 \Rightarrow y = 1$
+    \item (1)-(3)：$2z = 4 \Rightarrow z = 2$
+    \item 代入(1)：$x + 1 + 2 = 6 \Rightarrow x = 3$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\pause
+\textbf{关键发现}：
+\centerline{消元法可以推广到任意多元方程组！}
+
+\bigskip
+\pause
+在消元过程中：
+\begin{itemize}
+    \item 出现 $0 = 0$ → 可能有无穷多解
+    \item 出现 $0 = 1$ → 无解
+    \item 正好消元到只剩一个未知数 → 唯一解
+\end{itemize}
+\end{frame}
+
+\section{消元法的矩阵表示}
+
+\begin{frame}
+\fontsize{10}{12}\selectfont
+\centerline{\textbf{方程组}}
+\[
+\begin{cases}
+a_{11}x_1 + a_{12}x_2 + a_{13}x_3 = b_1 \\
+a_{21}x_1 + a_{22}x_2 + a_{23}x_3 = b_2 \\
+a_{31}x_1 + a_{32}x_2 + a_{33}x_3 = b_3
+\end{cases}
+\]
+
+\bigskip
+\centerline{\textbf{矩阵形式}}
+\[
+A = \begin{pmatrix}
+a_{11} & a_{12} & a_{13} \\
+a_{21} & a_{22} & a_{23} \\
+a_{31} & a_{32} & a_{33}
+\end{pmatrix}, \quad
+x = \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix}, \quad
+b = \begin{pmatrix} b_1 \\ b_2 \\ b_3 \end{pmatrix}
+\]
+
+\centerline{简记为：$Ax = b$}
+\end{frame}
+
+\begin{frame}
+\fontsize{10}{12}\selectfont
+\centerline{\textbf{消元法对应初等行变换}}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+消元法操作 & 矩阵操作 \\
+\hline
+方程乘以常数 & 行乘以常数 \\
+\hline
+方程相加减 & 行相加减 \\
+\hline
+交换两个方程 & 交换两行 \\
+\hline
+\end{tabular}
+\end{center}
+
+\pause
+\bigskip
+\centerline{这些操作叫做\textbf{初等行变换}}
+\end{frame}
+
+\section{初等行变换的性质}
+
+\begin{frame}
+\fontsize{11}{13}\selectfont
+\centerline{\textbf{核心性质：初等行变换不改变方程组的解}}
+
+\bigskip
+\pause
+\centerline{直观理解}
+\begin{itemize}
+    \item 交换两个方程顺序 → 解不变
+    \item 方程乘以非零常数 → 解不变
+    \item 方程相加 → 解不变（等量替换）
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\fontsize{10}{12}\selectfont
+\centerline{\textbf{初等行变换与行列式}}
+
+\[
+\det\begin{pmatrix} a & b \\ c & d \end{pmatrix} = ad - bc
+\]
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+初等行变换 & 行列式的变化 \\
+\hline
+交换两行 & 变号（乘以 -1） \\
+\hline
+行乘以常数 $k$ & 行列式乘以 $k$ \\
+\hline
+行乘以 $k$ 加到另一行 & \textbf{不变} \\
+\hline
+\end{tabular}
+\end{center}
+
+\pause
+\bigskip
+\centerline{\textbf{重要}：倍加变换不改变行列式！}
+\end{frame}
+
+\section{对角矩阵情况}
+
+\begin{frame}
+\fontsize{11}{13}\selectfont
+\centerline{\textbf{什么是对角矩阵？}}
+
+\[
+D = \begin{pmatrix}
+d_1 & & \\
+& d_2 & \\
+& & \ddots \\
+& & & d_n
+\end{pmatrix}
+\]
+
+\pause
+\bigskip
+\centerline{\textbf{行列式}：$\det(D) = d_1 \cdot d_2 \cdots d_n$}
+\end{frame}
+
+\begin{frame}
+\fontsize{11}{13}\selectfont
+\centerline{\textbf{对角方程组的解}}
+
+\[
+\begin{cases}
+d_1 x_1 = b_1 \\
+d_2 x_2 = b_2 \\
+\vdots \\
+d_n x_n = b_n
+\end{cases}
+\]
+
+\pause
+\bigskip
+\centerline{\textbf{解}：$x_i = \dfrac{b_i}{d_i}$}
+
+\bigskip
+\pause
+如果 $d_i = 0$：
+\begin{itemize}
+    \item 对应 $b_i = 0$ → 无穷多解
+    \item 对应 $b_i \neq 0$ → 无解
+\end{itemize}
+\end{frame}
+
+\section{秩的概念}
+
+\begin{frame}
+\fontsize{10}{12}\selectfont
+\centerline{\textbf{行列式为零意味着什么？}}
+
+\[
+\det(A) = 0 \iff \text{矩阵的"有效信息"不足}
+\]
+
+\bigskip
+\pause
+\centerline{\textbf{从方程组角度看：秩}}
+
+\bigskip
+例子：
+\[
+\begin{cases}
+x + y = 2 \\
+2x + 2y = 4
+\end{cases}
+\]
+
+第二个方程是第一个的2倍，\textbf{没有提供新信息}！
+
+\pause
+\bigskip
+\centerline{\textbf{定义}：不能由其他方程线性组合得到的方程个数}
+\end{frame}
+
+\begin{frame}
+\fontsize{10}{12}\selectfont
+\centerline{\textbf{秩与解的情况}}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+情况 & 秩 & 解的情况 \\
+\hline
+秩 = 未知数个数 & $\text{rank}(A) = n$ & 唯一解 \\
+\hline
+秩 < 未知数个数 & $\text{rank}(A) < n$ & 无穷多解 \\
+\hline
+增广矩阵秩 > 系数矩阵秩 & $\text{rank}[A|b] > \text{rank}(A)$ & 无解 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\section{克拉默法则}
+
+\begin{frame}
+\fontsize{10}{12}\selectfont
+\centerline{\textbf{克拉默法则（Cramer's Rule）}}
+
+\bigskip
+对于 $n$ 元线性方程组 $Ax = b$，如果 $\det(A) \neq 0$，则：
+\[
+x_i = \frac{\det(A_i)}{\det(A)}
+\]
+
+其中 $A_i$ 是把 $A$ 的第 $i$ 列换成 $b$ 得到的矩阵。
+\end{frame}
+
+\begin{frame}
+\fontsize{9}{11}\selectfont
+\centerline{\textbf{证明（线性列变换）}}
+
+设 $A = (a_1, a_2, ..., a_n)$，方程 $Ax = b$ 写成：
+\[
+x_1 a_1 + x_2 a_2 + \cdots + x_n a_n = b
+\]
+
+\pause
+\bigskip
+考虑 $A_i = (a_1, ..., a_{i-1}, b, a_{i+1}, ..., a_n)$
+
+\pause
+\bigskip
+根据行列式对列的线性性质：
+\[
+\det(A_i) = x_i \cdot \det(A)
+\]
+
+\pause
+\bigskip
+所以：
+\[
+x_i = \frac{\det(A_i)}{\det(A)}
+\]
+
+\centerline{\hfill $\square$}
+\end{frame}
+
+\section{结论}
+
+\begin{frame}
+\centerline{\textbf{结论}}
+
+\bigskip
+\begin{enumerate}
+    \item \textbf{通用求解方法}：消元法（初等行变换）
+    \item \textbf{矩阵表示}：$Ax = b$
+    \item \textbf{行列式性质}：倍加变换不改变行列式
+    \item \textbf{解的判断}：$\text{rank}(A)$ vs $\text{rank}[A|b]$
+    \item \textbf{公式解}：克拉默法则
+\end{enumerate}
+\end{frame}
+
+\end{document}
