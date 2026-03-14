@@ -1,0 +1,395 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\title{矩阵对角化与若当标准型}
+\date{2026年3月}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{前置知识：特征值与特征向量的几何意义}
+
+\subsection{问题：什么是线性变换的"不变方向"？}
+
+给定一个矩阵 $A$，它代表一个线性变换。问题是：是否存在一个方向，在变换后仍然保持不变？
+
+\subsection{特征向量的定义}
+
+如果向量 $v \neq 0$ 满足
+\[
+Av = \lambda v
+\]
+则称 $v$ 是 $A$ 的特征向量，$\lambda$ 是对应的特征值。
+
+特征向量 = 变换后方向不变的向量
+
+特征值 = 在该方向上的伸缩倍数
+
+\begin{itemize}
+    \item $\lambda > 1$：拉伸
+    \item $0 < \lambda < 1$：压缩
+    \item $\lambda = 1$：方向完全不变
+    \item $\lambda < 0$：反向并伸缩
+\end{itemize}
+
+\section{引言：我们为什么要研究这个问题？}
+
+在研究矩阵时，我们希望找到一种方法，把矩阵变得更简单。
+
+对角矩阵是最简单的形式：
+\[
+\Lambda = \begin{pmatrix}
+\lambda_1 & & \\
+& \ddots & \\
+& & \lambda_n
+\end{pmatrix}
+\]
+
+它的幂运算非常容易：
+\[
+\Lambda^k = \begin{pmatrix}
+\lambda_1^k & & \\
+& \ddots & \\
+& & \lambda_n^k
+\end{pmatrix}
+\]
+
+问题是：\textbf{是不是所有矩阵都能变成对角矩阵？}
+
+\section{第一阶段：最理想的情况——对角化}
+
+\subsection{问题引入}
+
+\begin{center}
+\fbox{已知矩阵 $A$，如何快速计算 $A^{100}$？}
+\end{center}
+
+直接乘法显然不现实——我们需要寻找更聪明的方法。
+
+我们自然会问：
+
+\begin{center}
+\fbox{能否把一般矩阵变成对角矩阵？}
+\end{center}
+
+如果 $A = P\Lambda P^{-1}$，那么 $A^k = P\Lambda^k P^{-1}$
+
+\subsection{矩阵对角化的定义}
+
+若存在可逆矩阵 $P$ 和对角矩阵 $\Lambda$，使得
+\[
+A = P\Lambda P^{-1}
+\]
+则称矩阵 $A$ 可对角化，$P$ 的列是 $A$ 的特征向量。
+
+\subsection{充要条件}
+
+$A$ 可对角化的充分必要条件是：$A$ 有 $n$ 个线性无关的特征向量。
+
+\section{第二阶段：不能对角化怎么办？}
+
+考虑矩阵 $A = \begin{pmatrix} 2 & 1 \\ 0 & 2 \end{pmatrix}$
+
+特征值 $\lambda = 2$（重根），只有1个特征向量，无法构成 $P$。
+
+问题：只有1个特征向量，无法对角化，怎么办？
+
+\subsection{几何重数与代数重数}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+概念 & 含义 & 例子 \\
+\hline
+代数重数 & 特征值作为方程根的重数 & $\lambda=2$，重数=2 \\
+\hline
+几何重数 & 线性无关的特征向量个数 & 只有1个 \\
+\hline
+\end{tabular}
+\end{center}
+
+如果几何重数 = 代数重数 → 可对角化
+
+如果几何重数 < 代数重数 → 不能对角化，需要若当块
+
+\section{第三阶段：若当块的发现之旅}
+
+\subsection{核心问题：如何在特征值旁边"添加"非零元素？}
+
+我们想要：
+\[
+A^k = P J^k P^{-1}
+\]
+其中 $J$ 是"类似对角"的矩阵。
+
+如果不能完全对角化，能否在紧邻对角线的位置添加非零元素？
+\[
+\begin{pmatrix}
+\lambda & ? \\
+0 & \lambda
+\end{pmatrix}
+\]
+
+这个"?"填什么？
+
+\subsection{填什么最简单？}
+
+选项1：填 $\lambda$ 本身？
+
+选项2：填1？$\begin{pmatrix} \lambda & 1 \\ 0 & \lambda \end{pmatrix}$
+
+\textbf{填1最简单！} 因为：
+\begin{itemize}
+    \item 任何非零数都可以通过"缩放"变成1
+    \item 幂运算时，1的幂永远是1，形式最简洁
+    \item 上移位矩阵 $N$ 有性质：$N^k$ 形式规则
+\end{itemize}
+
+验证：
+\[
+\begin{pmatrix} \lambda & 1 \\ 0 & \lambda \end{pmatrix}^2
+= \begin{pmatrix} \lambda^2 & 2\lambda \\ 0 & \lambda^2 \end{pmatrix}
+\]
+
+这就是若当块！
+
+\section{第四阶段：广义特征向量的探索}
+
+\subsection{我是如何思考的？}
+
+\textbf{第一层思考：只有1个特征向量，怎么办？}
+
+我是第一个遇到这个问题的人。
+
+已知：特征向量满足 $(A-\lambda I)v_1 = 0$
+
+问题：我有2维空间，但只有1个特征向量，如何找到另一个"有用"的方向？
+
+\subsection{第二层思考：能否放松条件？}
+
+特征向量要求：变换后完全不变（方向不变）
+
+能否降低要求：变换后"差不多"不变？
+
+类比：如果找不到完美的，找"次优"的也行！
+
+\subsection{第三层思考：如何描述"差不多"？}
+
+我们想要找到可逆矩阵 $P = (v_1, v_2)$，使得 $A$ 在新坐标系下变简单。
+
+设 $A = \begin{pmatrix} \lambda & 2 \\ 0 & \lambda \end{pmatrix}$，我们希望 $A = PJ P^{-1}$。
+
+由 $AP = PJ$，得到：
+\[
+\begin{cases}
+A v_1 = \lambda v_1 \\
+A v_2 = \lambda v_2 +  2v_1
+\end{cases}
+\]
+
+即
+\[
+\begin{cases}
+(A - \lambda I) v_1 = 0 \\
+(A - \lambda I) v_2 =  2v_1
+\end{cases}
+\]
+
+这要求我们解两个方程！
+
+
+解方程 $(A - 2I)v_2 = 2v_1$：
+\[
+\begin{pmatrix} 0 & 2 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+\]
+
+得到 $y = \frac{1}{2}$，取 $v_2 = \begin{pmatrix} 0 \\ \frac{1}{2} \end{pmatrix}$。
+
+验证：$v_1, v_2$ 线性无关！
+
+构造 $P = (v_1, v_2)$，则 $A = PJP^{-1}$，其中 $J = \begin{pmatrix} 2 & 1 \\ 0 & 2 \end{pmatrix}$。
+
+这就是若当块！我们不需要"公式"，只需要好奇心和逻辑推理。
+
+这就是广义特征向量的诞生！
+
+\subsection{第四层思考：链条的源头是特征值}
+
+\textbf{核心发现}：所有链条都源于特征值！
+
+每一代的关系：
+\begin{itemize}
+    \item $J v_1 = \lambda v_1$（特征向量，紧邻特征值）
+    \item $J v_2 = \lambda v_2 + v_1$（广义特征向量，指向 $v_1$）
+    \item $J v_3 = \lambda v_3 + v_2$（广义特征向量，指向 $v_2$）
+    \item ...
+\end{itemize}
+
+这就是链条！源头是特征值 $\lambda$，每一代"指向"前一代。
+
+\section{第五阶段：判断若当块结构的方法}
+
+我们有4阶矩阵，特征值 $\lambda = 2$（四重），几何重数 = 2（2个特征向量）。
+
+两种可能：
+\begin{enumerate}
+    \item 两个2阶块：$J_2(2) + J_2(2)$
+    \item 一个3阶块 + 一个1阶块：$J_3(2) + J_1(2)$
+\end{enumerate}
+
+如何判断是哪种？
+
+设 $N = A - 2I$。
+
+对于若当块，$N$ 的幂次会揭示链条的长度。
+
+\subsection{情况1：两个2阶块}
+
+若当矩阵：
+\[
+J = \begin{pmatrix}
+2 & 1 & 0 & 0 \\
+0 & 2 & 0 & 0 \\
+0 & 0 & 2 & 1 \\
+0 & 0 & 0 & 2
+\end{pmatrix}
+= \begin{pmatrix} J_2(2) & 0 \\ 0 & J_2(2) \end{pmatrix}
+\]
+
+则 $N = J - 2I$:
+\[
+N = \begin{pmatrix}
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0
+\end{pmatrix}
+\]
+
+秩：$\text{rank}(N) = 2$。
+
+$N^2$:
+\[
+N^2 = \begin{pmatrix}
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0
+\end{pmatrix}
+\]
+
+秩：$\text{rank}(N^2) = 0$。
+
+\subsection{情况2：一个3阶块 + 一个1阶块}
+
+若当矩阵：
+\[
+J = \begin{pmatrix}
+2 & 1 & 0 & 0 \\
+0 & 2 & 1 & 0 \\
+0 & 0 & 2 & 0 \\
+0 & 0 & 0 & 2
+\end{pmatrix}
+= \begin{pmatrix} J_3(2) & 0 \\ 0 & J_1(2) \end{pmatrix}
+\]
+
+则 $N = J - 2I$:
+\[
+N = \begin{pmatrix}
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0
+\end{pmatrix}
+\]
+
+秩：$\text{rank}(N) = 2$。
+
+$N^2$:
+\[
+N^2 = \begin{pmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0
+\end{pmatrix}
+\]
+
+秩：$\text{rank}(N^2) = 1$。
+
+$N^3 = 0$，秩为0。
+
+\section{总结：如何通过秩判断}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+结构 & rank(N) & rank(N²) & rank(N³) \\
+\hline
+两个2阶块 & 2 & 0 & 0 \\
+\hline
+一个3阶+一个1阶 & 2 & 1 & 0 \\
+\hline
+一个4阶块 & 3 & 2 & 1 \\
+\hline
+可对角化 & 4 & 4 & 4 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{更一般的规律}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1cm,
+    box/.style={
+        rectangle, draw, rounded corners,
+        text width=3.5cm, align=center
+    }
+]
+    \node[box,fill=blue!20] (step1) {计算 $N = A - \lambda I$ 的秩};
+    \node[box,fill=green!20,below=of step1] (step2) {计算 $N^2$ 的秩};
+    \node[box,fill=yellow!20,below=of step2] (step3) {计算 $N^3$ 的秩...};
+    \node[box,fill=red!20,below=of step3] (step4) {根据秩的变化判断若当块结构};
+    
+    \draw[->,thick] (step1) -- (step2);
+    \draw[->,thick] (step2) -- (step3);
+    \draw[->,thick] (step3) -- (step4);
+\end{tikzpicture}
+\end{center}
+
+规律：
+\begin{itemize}
+    \item rank 每次下降多少，就意味着增加了多长的链条
+    \item 链条长度 = rank($N^k$) - rank($N^{k+1}$) 的累积
+\end{itemize}
+
+这就是判断若当块阶数的完整方法！
+
+
+\section{完整的科研范式总结}
+
+\begin{enumerate}
+    \item \textbf{问题}：是否存在快速的矩阵乘幂算法？
+    \item \textbf{特殊情况}：对角化（最简单但应用范围窄）
+    \item \textbf{困难}：几何重数 $<$ 代数重数
+    \item \textbf{解决}：若当化（退而求其次）
+    \item \textbf{探索}：广义特征向量链的构成，若当块的结构
+    \item \textbf{方法}：通过 $N = A - \lambda I$ 的秩判断结构
+\end{enumerate}
+
+这就是矩阵对角化与若当标准型的完整发现之旅——不是灌输公式，而是从问题出发，一步步探索！
+
+\end{document}
